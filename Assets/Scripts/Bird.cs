@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
+    [SerializeField] float _launchForce = 500f;
+
     Vector2 _startPosition;
-    public float bigForce = 100f;
     Rigidbody2D _rigidbody2D;
     SpriteRenderer _spriteRenderer;
 
@@ -32,7 +34,7 @@ public class Bird : MonoBehaviour
         direction.Normalize();
 
         _rigidbody2D.isKinematic = false;
-        _rigidbody2D.AddForce(direction * bigForce);
+        _rigidbody2D.AddForce(direction * _launchForce);
 
         _spriteRenderer.color = Color.white;
     }
@@ -49,5 +51,18 @@ public class Bird : MonoBehaviour
         
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        StartCoroutine(ResetAfterDelay());
 
+    }
+
+    IEnumerator ResetAfterDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        _rigidbody2D.position = _startPosition;
+        _rigidbody2D.velocity = Vector2.zero;
+        _rigidbody2D.isKinematic = true;
+        
+    }
 }
